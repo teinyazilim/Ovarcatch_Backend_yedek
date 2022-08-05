@@ -1,0 +1,298 @@
+
+entity User {
+	username String,
+    password String,
+    brpNumber String,
+    brpExpireDate Date,
+    name String,
+    surname String,
+    email String,
+    phoneNumber String,
+    userType UserType
+}
+enum UserType{
+	CUSTOMER,
+    PERSONEL,
+    MANAGER
+}
+entity UsersOfCompany{
+	userID Number,
+    companyID Number,
+    sharePercent Number
+}
+
+entity UserRole{
+	userID Number,
+    roleID Number
+}
+
+entity Role {
+	roleCode String,
+    module Module,
+    roleDescription String
+}
+
+relationship ManyToMany{
+	User{userID} to UsersOfCompany,
+    User{userID} to UserRole,
+    Company{companyID} to UsersOfCompany,
+    IncorprationCompany {corpration} to NatureOfBusines
+    
+}
+ 
+relationship OneToOne{
+    Company{businessAddress} to Address,
+    Company{homeAddress} to Address,
+    SoleTradeCompany{soleTrade} to Company,
+    IncorprationCompany {corpration} to Company,
+    BankTransaction{bid} to Document
+    Letter{letterTypeId} to LetterType,
+    DirectorDetail{campanyID} to Company
+}
+  
+relationship OneToMany{
+	Company{companyID} to NatureOfCompany, 
+    Company{companyID}  to Document,
+    Company{companyID}  to BankTransaction,
+    UserRole{roleID} to Role,
+    BankTransaction{bid} to BankTransactionDetail
+    CacheTransactionDetail{documentID} to Document,
+}
+
+entity NatureOfCompany{
+	companyID Number,
+    code String
+}
+
+entity DirectorDetail{
+	dId Number,
+    campanyID Number,
+    direktorName String,
+    visaExpiryDate Date,
+    nino String,
+    personelUTR String
+}
+
+entity Company{
+    companyID Number,
+	companyName String,
+    fullName String,
+    birthDate Date,
+    placeOfBirth String,
+    phone String,
+    ninoNumber String,
+    utr String,
+    email String,
+    pageStatus PageStatus,
+    sessionStatus SessionStatus
+    companyType CompanyType,
+    notes String,
+    soleTradeCompany SoleTradeCompany,
+    incorprationCompany IncorprationCompany
+}
+
+
+entity SoleTradeCompany{
+	visaDateofIssue Date,
+    visaExpiryDate Date,
+    maritalStatus String,
+    numberOfDependence String
+}
+
+entity IncorprationCompany{
+    registration String,//by fill personel
+    yearEndDate Date,//by fill personel
+    dueDate Date,//by fill personel
+    authentication String,//by fill personel
+    paye String,//by fill personel
+    companyUTR String,//by fill personel
+    natureOfBusines NatureOfBusines,
+    nationality String
+}
+
+entity NatureOfBusines{
+	code String,
+    description String
+}
+
+entity Address{
+	companyID Number,
+	city String,
+    district String,
+    neighbourhood String,
+    street String,
+    number Number,
+    postCode String 
+    addressType AddressType
+}
+
+enum AddressType{
+	HOME,
+    BUSINESS
+}
+
+enum CompanyType{
+	SOLETRADER,
+    INCORPREOATION
+}
+enum PageStatus{
+ 	CUSTOMER_PAGE,
+    PERSONEL_PAGE,
+    MANAGER_PAGE
+}
+
+enum SessionStatus{
+    START,
+	INPROGESS,
+    DONE
+}
+
+entity UserTransaction{
+userId Number, //personel onay vermiş
+userType UserType,
+module Module,
+pageStatus PageStatus,
+sessionStatus SessionStatus,
+processDate Date,
+}
+
+enum Module{
+    COMPANY_CREATE,
+	LETTER_MODULE,
+    BANK_STATEMENT_CONVERTION,
+    INVOICE_MODULE,
+    CUSTOMER_ORDER_MODULE,
+    VISA_DOCUMENT_MODULE,
+    PAYROL_MODULE,
+    REMENDER_MODULE
+}
+enum DocumentType{
+  BANK,
+  VISA,
+  LETTER,
+  UTR,
+  NINO,
+  PAYE,
+  COMPANY
+}
+entity Document{
+  id Number,
+  userId Number,
+  companyID Number,
+  documentName String,
+  fileName String,
+  filePath String,
+  fileDescription String
+}
+
+entity Letter{
+userId Number,
+letterName String,
+letterContent String,
+letterTypeId Number,
+pageStatus PageStatus,
+sessionStatus SessionStatus
+}
+
+
+
+entity LetterType{
+letterTypeId Number,
+letterTypeEnum LetterTypeEnum,
+letterStatus LetterStatus
+
+}
+enum LetterStatus{
+    CONFIRM,
+	UNCONFIRM
+}
+enum LetterTypeEnum{
+    NINO_APPLY,
+	TURIST_VISA,
+    HOME_OFFICE,
+    INVITATION,
+    RENT,
+    HMRC_PENAL,
+    MILITARY,
+    COR_TAX_PENAL,
+    BANK_REFERENCE,
+    CLEARANCE_LETTER,
+    ENGAGEMENT_LETTER
+}
+
+entity BankTransaction{
+   	bId Number,
+    userId Number,
+    companyID Number,
+    companyName String,
+    accountName String,
+    montlyDate Date,
+    previousBalance String,
+    iban String,
+    newBalance String,
+    sortCode String,
+    accountNumber String,
+    pageStatus PageStatus,
+    sessionStatus SessionStatus
+}
+
+entity BankTransactionDetail{
+      btdiD Number, 
+      processDate Date,
+      description String,
+      transactionType String,
+      moneyIn String,
+      moneyOut String,
+      balance String,
+      bId Number
+}
+
+
+
+entity CacheTransaction{
+    ctID Number,
+    userId Number,
+    companyID Number,
+ 
+    
+}
+entity CacheTransactionDetail{
+   ctdID Number, 
+   moneyIn String,
+   moneyOut String,
+   personelExpenditure PersonelExpenditure,
+   ctID Number,
+   documentID Number,
+}
+enum PersonelExpenditure{
+Rent,
+Mortgage,
+Council_Tax,
+Gas,
+Electrcity,
+Water,
+Telephone,
+Food,
+Personal_Clothing,
+Car_Purchase,
+Car_Insurance,
+Mot,
+Road_Tax,
+Petrol_Diesel,
+Bus_rail_travel,
+Money_Sent_to_family_abroad
+}
+enum BankType{
+    BARCLAYS,
+	LLOYDS,
+    METROBANK,
+    MONZO,
+    NATWEST,
+    SANTANDER,
+    STARLING,
+    TIDE,
+    HSBS,
+    TUDOR,
+    TURKISH_BANK,
+    OTHER
+}

@@ -1,0 +1,10 @@
+
+${AnsiColor.RED}  _____                         _       _
+${AnsiColor.RED} |  _  |                       | |     | |
+${AnsiColor.RED} | | | |_   _____ _ __ ___ __ _| |_ ___| |__
+${AnsiColor.RED} | | | \ \ / / _ \ '__/ __/ _` | __/ __| '_ \
+${AnsiColor.RED} \ \_/ /\ V /  __/ | | (_| (_| | || (__| | | |
+${AnsiColor.RED}  \___/  \_/ \___|_|  \___\__,_|\__\___|_| |_|
+
+${AnsiColor.BRIGHT_BLUE}:: Overcatch 🤓  :: Running Spring Boot ${spring-boot.version} ::
+

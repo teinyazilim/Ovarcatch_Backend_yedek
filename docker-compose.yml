@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+
+  rabbitmq-container:
+    image: rabbitmq:3-management
+    container_name: msrabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  mysql-container:
+    image: mysql
+    container_name: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=overcatch
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=1234
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d:ro
+
+  overcatchapp:
+    image: docker-overcatch
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq-container
+    volumes:
+      - /data/overcatchapp
+    links:
+      - rabbitmq-container
+      - mysql-container

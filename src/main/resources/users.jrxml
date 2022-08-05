@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.1.final using JasperReports Library version 6.19.1-867c00bf88cd4d784d404379d6c05e1b419e8a4c  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="myReports" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="2473d08b-278a-467a-84c0-65412c8d5516">
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="Sample DB"/>
+    <!-- <property name="background.image.path" value="C:\Users\DELL\Pictures\Yeni Microsoft Word Belgesi_page-0001.jpg"/> -->
+    <property name="background.image.widht" value="592"/>
+    <property name="background.image.height" value="845"/>
+    <parameter name="name" class="java.lang.String"/>
+    <parameter name="country" class="java.lang.String"/>
+    <parameter name="city" class="java.lang.String"/>
+    <parameter name="district" class="java.lang.String"/>
+    <parameter name="street" class="java.lang.String"/>
+    <parameter name="number" class="java.lang.String"/>
+    <parameter name="companyName" class="java.lang.String"/>
+
+    <field name="paymentNumber" class="java.lang.Float"></field>
+    <field name="datePaymentRate" class="java.time.LocalDate"></field>
+    <field name="shareHolding" class="java.lang.Float"></field>
+    <field name="amountPayable" class="java.lang.Float"></field>
+    <field name="dividedEndDate" class="java.time.LocalDate"></field>
+
+
+
+    <background>
+        <band height="842" splitType="Stretch">
+            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+            <image>
+                <reportElement x="0" y="78" width="610" height="760" uuid="5282e7cd-1a08-4b3a-992e-5ec9d9305094"/>
+                <imageExpression><![CDATA["C:/Tein/test/reportFiles/back.png"]]></imageExpression>
+            </image>
+            <image>
+                <reportElement x="0" y="708" width="820" height="134" uuid="00ece9a0-5061-4d5d-99f1-687d5e8cd433"/>
+                <imageExpression><![CDATA["C:/Tein/test/reportFiles/alt.png"]]></imageExpression>
+            </image>
+            <image>
+                <reportElement x="1" y="60" width="653" height="120" uuid="d8b647e2-8d2f-4779-ad04-3962e4e6e433">
+                    <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                </reportElement>
+                <imageExpression><![CDATA["C:/Tein/test/reportFiles/ust.png"]]></imageExpression>
+            </image>
+        </band>
+    </background>
+    <title>
+        <band height="123" splitType="Stretch">
+            <image>
+                <reportElement x="0" y="0" width="640" height="122" uuid="acc1650b-5cc9-4515-9d24-f0e77c3baf7c"/>
+                <imageExpression><![CDATA["C:/Tein/test/reportFiles/title2.png"]]></imageExpression>
+            </image>
+        </band>
+    </title>
+    <pageHeader>
+        <band height="556" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="-12" width="595" height="23" uuid="73ad3627-2fcd-47a6-ae12-f3d4f8533f05"/>
+                <textElement textAlignment="Center">
+                    <font size="13" isBold="true" isUnderline="true"/>
+                </textElement>
+                <text><![CDATA[Dividend Voucher]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="122" y="23" width="100" height="22" uuid="28e152a2-c7fc-44fc-9de5-ff4c8e649919"/>
+                <textElement textAlignment="Left"/>
+                <text><![CDATA[Payment number]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="123" y="40" width="90" height="20" forecolor="#1008FF" uuid="a2794c2d-0fdf-4452-aaa1-e90160a1be8a"/>
+                <box>
+                    <pen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{paymentNumber}.toString()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="363" y="23" width="100" height="22" uuid="a415714d-1044-40d4-8945-70acff4e9fa3"/>
+                <textElement textAlignment="Left"/>
+                <text><![CDATA[Date payment made]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="370" y="41" width="81" height="20" forecolor="#1008FF" uuid="facaf14b-b651-4129-93cf-36b195409197"/>
+                <box>
+                    <pen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{datePaymentRate}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="247" y="79" width="100" height="20" uuid="1550038d-ab1a-499d-97ab-67b1a3cf05d9"/>
+                <text><![CDATA[Ordinary Shares]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="247" y="64" width="100" height="20" uuid="8e974ee6-508e-4f97-9db6-11f61b5ac928"/>
+                <textElement>
+                    <font isBold="true" isItalic="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{company.name}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="123" y="110" width="211" height="13" forecolor="#000000" uuid="947cf91f-c7c4-4224-8a82-68756e624ce2"/>
+                <textElement>
+                    <font isBold="true" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[Employee Name & Address:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="123" y="122" width="152" height="17" uuid="3367d804-3556-4b99-aeff-3f7d5d5b01c4"/>
+                <textFieldExpression><![CDATA[$P{name}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="123" y="133" width="180" height="17" uuid="9bc6b72c-1e78-41e3-b083-f9149a6a6949"/>
+                <textFieldExpression><![CDATA[$P{street}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="123" y="144" width="180" height="17" uuid="5e6bfc4f-2a2f-4680-b275-e9ac926bdc7d"/>
+                <textFieldExpression><![CDATA[$P{district}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="123" y="155" width="180" height="20" uuid="aa70558a-9145-41c8-91db-0290383fa777"/>
+                <textFieldExpression><![CDATA[$P{city}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="123" y="166" width="180" height="14" uuid="3fbbbe9e-029e-4f8a-b967-44eaf9241896"/>
+                <textFieldExpression><![CDATA[$P{number}]]></textFieldExpression>
+            </textField>
+
+
+            <staticText>
+                <reportElement x="123" y="206" width="181" height="21" uuid="7bb0496b-4583-427a-ad47-9ea92ac7d727"/>
+                <text><![CDATA[Shareholding]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="123" y="224" width="90" height="20" forecolor="#1008FF" uuid="f4a0809c-72bd-4ab7-9bce-d795a86d5211"/>
+                <box>
+                    <pen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{shareHolding}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="340" y="200" width="95" height="33" uuid="c9ddc9e0-25b8-4c79-bf08-572f6e1118aa"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Amount payable]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="359" y="224" width="85" height="20" forecolor="#1008FF" uuid="d4712258-1eed-4745-976d-5a1687652172"/>
+                <box>
+                    <pen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{amountPayable}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="122" y="285" width="386" height="60" uuid="0801a3f6-05ff-4ea2-a117-6dd0d15251fe"/>
+                <text><![CDATA[This cheque is in payment of the Interim dividend
+for the year ended
+paid at the rate of                                      on those
+ordinary shares registered in your name on     ]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="212" y="298" width="94" height="14" forecolor="#1008FF" uuid="32f2f94a-7cb5-460a-8f34-34c64debe42d"/>
+                <textFieldExpression><![CDATA[$F{dividedEndDate}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="212" y="310" width="94" height="14" forecolor="#1008FF" uuid="32f2f94a-7cb5-460a-8f34-34c64debe42d"/>
+                <textFieldExpression><![CDATA[$F{amountPayable}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="320" y="323" width="94" height="14" forecolor="#1008FF" uuid="0426b39f-7a9d-425d-aa8b-7ab0a8eda8ff"/>
+                <textFieldExpression><![CDATA[$F{dividedEndDate}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="122" y="356" width="100" height="20" uuid="de2ccc3a-3764-465d-af8c-b58e3f61c38f"/>
+                <text><![CDATA[Given on behalf of]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="122" y="370" width="100" height="19" uuid="7bc1978d-0896-457e-b118-0c94111c2e50"/>
+                <textElement>
+                    <font isBold="true" isItalic="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{company.name}]]></textFieldExpression>
+            </textField>
+
+            <staticText>
+                <reportElement x="120" y="399" width="426" height="20" forecolor="#1008FF" uuid="ddf6cc03-49fa-4c2b-af10-88f6f151ce8c"/>
+                <textElement textAlignment="Left"/>
+                <text><![CDATA[Registered office address 17 Greenlanes, London, United Kingdom, N16 9BS]]></text>
+            </staticText>
+
+        </band>
+    </pageHeader>
+</jasperReport>
