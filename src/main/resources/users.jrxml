@@ -26,27 +26,14 @@
         <band height="842" splitType="Stretch">
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
             <image>
-                <reportElement x="0" y="78" width="610" height="760" uuid="5282e7cd-1a08-4b3a-992e-5ec9d9305094"/>
-                <imageExpression><![CDATA["C:/Tein/test/reportFiles/back.png"]]></imageExpression>
-            </image>
-            <image>
-                <reportElement x="0" y="708" width="820" height="134" uuid="00ece9a0-5061-4d5d-99f1-687d5e8cd433"/>
-                <imageExpression><![CDATA["C:/Tein/test/reportFiles/alt.png"]]></imageExpression>
-            </image>
-            <image>
-                <reportElement x="1" y="60" width="653" height="120" uuid="d8b647e2-8d2f-4779-ad04-3962e4e6e433">
-                    <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                </reportElement>
-                <imageExpression><![CDATA["C:/Tein/test/reportFiles/ust.png"]]></imageExpression>
+                <reportElement x="0" y="0" width="629" height="841" uuid="ff039f24-281e-4356-8fb0-8b96bb48cb69"/>
+                <imageExpression><![CDATA["C:/Tein/test/reportFiles/background.png"]]></imageExpression>
             </image>
         </band>
     </background>
     <title>
         <band height="123" splitType="Stretch">
-            <image>
-                <reportElement x="0" y="0" width="640" height="122" uuid="acc1650b-5cc9-4515-9d24-f0e77c3baf7c"/>
-                <imageExpression><![CDATA["C:/Tein/test/reportFiles/title2.png"]]></imageExpression>
-            </image>
+
         </band>
     </title>
     <pageHeader>
@@ -93,7 +80,7 @@
                 <textElement>
                     <font isBold="true" isItalic="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$P{company.name}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{companyName}]]></textFieldExpression>
             </textField>
             <staticText>
                 <reportElement x="123" y="110" width="211" height="13" forecolor="#000000" uuid="947cf91f-c7c4-4224-8a82-68756e624ce2"/>
@@ -179,7 +166,7 @@ ordinary shares registered in your name on     ]]></text>
                 <textElement>
                     <font isBold="true" isItalic="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$P{company.name}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{companyName}]]></textFieldExpression>
             </textField>
 
             <staticText>
