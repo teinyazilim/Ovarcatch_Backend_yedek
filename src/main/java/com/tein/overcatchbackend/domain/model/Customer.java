@@ -1,6 +1,7 @@
 package com.tein.overcatchbackend.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tein.overcatchbackend.domain.BaseEntity;
 import lombok.*;
 
@@ -27,6 +28,7 @@ public class Customer extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "USER_ID",referencedColumnName = "id")
+    @JsonProperty("userInfo")
     private User user;
 
 }
