@@ -34,7 +34,7 @@ public class CustomerDTO implements Serializable {
 
     //private Set<CustomerClientDTO> customerClients;
 
-    @JsonIgnore
+    //@JsonIgnore
     private UserDTO user;
 
     public void setUser(UserDTO user) {
