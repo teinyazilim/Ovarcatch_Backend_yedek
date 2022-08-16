@@ -40,285 +40,334 @@ public class ExistCompanyExportService {
 
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         try {
-            String file="C:\\teinApp\\organizasyon1.xlsx";
+            // dosya yolu
+            //C:\Users\DELL\Desktop\data
+            String file="C:\\Users\\DELL\\Desktop\\data\\organizasyon2.xlsx";
             XSSFWorkbook myWorkBook = new XSSFWorkbook(new FileInputStream(file));
 
-                XSSFSheet firstSheet = myWorkBook.getSheetAt(0);
-                for (int k = 1; k <= firstSheet.getPhysicalNumberOfRows(); k++) {
-                    Row row = firstSheet.getRow(k);
-                    if (row != null) {
-                        //Model Tanımlamaları
-                        Client client=new Client();
-                        Address address=new Address();
-                        Address addressHome=new Address();
-                        Company company=new Company();
-                        User user =new User();
-                        Customer customer=new Customer();
-                        CustomerClient customerClient=new CustomerClient();
-                        user.setUserType(UserType.CUSTOMER);
-                        user.setPassword(passwordEncoder.encode("12345"));
+            XSSFSheet firstSheet = myWorkBook.getSheetAt(0);
+            for (int k = 1; k <= firstSheet.getPhysicalNumberOfRows(); k++) {
+                Row row = firstSheet.getRow(k);
+                if (row != null) {
+                    //Model Tanımlamaları
+                    Client client=new Client();
+                    Address address=new Address();
+                    Address addressHome=new Address();
+                    Company company=new Company();
+                    User user =new User();
+                    Customer customer=new Customer();
+                    CustomerClient customerClient=new CustomerClient();
+                    user.setUserType(UserType.CUSTOMER);
+                    user.setPassword(passwordEncoder.encode("12345"));
 //                        user.setEmail("data[k-3]+@tein.com.tr");
-                        user.setRoles(rolesFromStrings(Arrays.asList("CUSTOMER")));
+                    user.setRoles(rolesFromStrings(Arrays.asList("CUSTOMER")));
 
-                        //REF-NO Code
-                        if(row.getCell(0) == null){
-                            break;
+                    //REF-NO Code
+                    if(row.getCell(0) == null){
+                        System.out.println("-------Ref no yok------");
+                        break;
+                    }
+                    //REF-NO Code
+                    if(row.getCell(0) !=null){
+                        if(row.getCell(0).getRichStringCellValue().toString().contains("AL")){
+                            client.setAgreementType(AgreementType.ECAA);
+                            System.out.println("-------Ref if------");
+
+                        }else if(row.getCell(0).getRichStringCellValue().toString().contains("TL")){
+                            client.setAgreementType(AgreementType.TRADING);
+                            System.out.println("-------Ref else if------");
                         }
-                        //REF-NO Code
-                        if(row.getCell(0) !=null){
-                            if(row.getCell(0).getRichStringCellValue().toString().contains("AL")){
-                                client.setAgreementType(AgreementType.ECAA);
+                        client.setClientTypeEnum(ClientTypeEnum.LIMITED);
+                        client.setIsExisting(true);
+                        client.setState("3");
+                        client.setIsMailSend(false);
+                        client.setClientFileName("firstFile");
+                        client.setIsExisting(true);
+                        client.setIsActive(true);
+                        user.setIsActive(true);
+                        user.setIsDeleted(false);
+                        client.setCode(row.getCell(0).getRichStringCellValue().toString());
+                        System.out.println("-------Ref else------");
+                    }
+                    //Company Name
+                    if(row.getCell(1) !=null){
+                        company.setName(row.getCell(1).getRichStringCellValue().toString());
+                        System.out.println("-------organizasyon Company Name------");
+                    }
+                    //Title
+                    if(row.getCell(2) !=null){
+                        user.setTitle(row.getCell(2).getRichStringCellValue().toString());
+                        System.out.println("-------organizasyon title------");
+                    }
+                    //User Name
+                    if(row.getCell(3) !=null){
 
-                            }else if(row.getCell(0).getRichStringCellValue().toString().contains("TL")){
-                                client.setAgreementType(AgreementType.TRADING);
+                        String name=row.getCell(3).getRichStringCellValue().toString();
+                        if(row.getCell(4)!=null){
+                            name=name+" "+row.getCell(4).getRichStringCellValue().toString();
+                        }
+                        user.setName(name);
+                        System.out.println("-------organizasyon usernameName------");
+
+                    }
+                    //User Surname
+                    if(row.getCell(5) !=null){
+                        String surname=row.getCell(5).getRichStringCellValue().toString();
+                        user.setSurname(surname);
+                        System.out.println("-------organizasyon sur Name------");
+                    }
+                    //Mobile phone
+                    if(row.getCell(6) !=null && row.getCell(6).toString().length()>0){
+                        try{
+                            String s = NumberToTextConverter.toText(row.getCell(6).getNumericCellValue());
+                            if(s.charAt(0)!='0'){
+                                user.setMsisdn("0"+s);
+                            }else {
+                                user.setMsisdn(s);
                             }
-                            client.setClientTypeEnum(ClientTypeEnum.LIMITED);
-                            client.setIsExisting(true);
-                            client.setState("3");
-                            client.setIsMailSend(false);
-                            client.setClientFileName("firstFile");
-                            client.setIsExisting(true);
-                            client.setIsActive(true);
-                            user.setIsActive(true);
-                            user.setIsDeleted(false);
-                            client.setCode(row.getCell(0).getRichStringCellValue().toString());
-                        }
-                        //Company Name
-                        if(row.getCell(1) !=null){
-                            company.setName(row.getCell(1).getRichStringCellValue().toString());
-                        }
-                        //Title
-                        if(row.getCell(2) !=null){
-                            user.setTitle(row.getCell(2).getRichStringCellValue().toString());
-                        }
-                        //User Name
-                        if(row.getCell(3) !=null){
-
-                            String name=row.getCell(3).getRichStringCellValue().toString();
-                            if(row.getCell(4)!=null){
-                                name=name+" "+row.getCell(4).getRichStringCellValue().toString();
+                            System.out.println("-------organizasyon mobile phone try------");
+                        }catch(Exception e){
+                            String veri=row.getCell(6).toString().replaceAll(" ","");
+                            if(veri.charAt(0)!='0'){
+                                user.setMsisdn("0"+veri);
+                            }else {
+                                user.setMsisdn(veri);
                             }
-                            user.setName(name);
-
+                            System.out.println("-------organizasyon mobile catch------");
                         }
-                        //User Surname
-                        if(row.getCell(5) !=null){
-                            String surname=row.getCell(5).getRichStringCellValue().toString();
-                            user.setSurname(surname);
-                        }
-                        //Mobile phone
-                        if(row.getCell(6) !=null && row.getCell(6).toString().length()>0){
-                            try{
-                                String s = NumberToTextConverter.toText(row.getCell(6).getNumericCellValue());
-                                if(s.charAt(0)!='0'){
-                                    user.setMsisdn("0"+s);
-                                }else {
-                                    user.setMsisdn(s);
-                                }
-                            }catch(Exception e){
-                                String veri=row.getCell(6).toString().replaceAll(" ","");
-                                if(veri.charAt(0)!='0'){
-                                    user.setMsisdn("0"+veri);
-                                }else {
-                                    user.setMsisdn(veri);
-                                }
-                            }
 
 //                            String expiryDate=row.getCell(3).getRichStringCellValue().toString();
 //                            expiryDate.replace(" ", "");
 //                            expiryDate.replace(".", "/");
 //                            director.setVisaExpiryDate(LocalDate.parse(expiryDate, formatter));
+                    }
+                    //Email
+                    if(row.getCell(7) !=null && row.getCell(7).toString().length()>0){
+                        user.setEmail(row.getCell(7).toString());
+                        System.out.println("-------organizasyon email------");
+                    }
+                    if(row.getCell(8) !=null && user.getEmail() ==null && row.getCell(8).toString().length()>0){
+                        System.out.println("-------organizasyon 8------");
+                        user.setEmail(row.getCell(8).toString());                        }
+                    if(row.getCell(10) !=null && row.getCell(10).toString().length()>0){
+                        System.out.println("-------organizasyon 9------");
+                        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd.MM.uuuu",new Locale("tr"));
+                        DateTimeFormatter formatter3 = DateTimeFormatter.ofPattern("d.MM.uuuu",new Locale("tr"));
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        company.setIncorporatedDate(LocalDate.parse(dateFormat.format(row.getCell(10).getDateCellValue())));
+
+                    }
+
+                    // Company UTR
+                    if(row.getCell(11) !=null && row.getCell(11).toString().length()>0){
+                        System.out.println("-------organizasyon 11------");
+                        String s = NumberToTextConverter.toText(row.getCell(11).getNumericCellValue());
+                        company.setCompanyUtr(String.valueOf(s));
+                    }
+
+                    // Company House Authentication
+                    if(row.getCell(12) !=null && row.getCell(12).toString().length()>0){
+                        System.out.println("-------organizasyon 12------");
+                        Cell cell = row.getCell(12);
+                        cell.setCellType(CellType.STRING);
+                        company.setAuthentication(cell.getStringCellValue());
+                    }
+
+                    String date1="";
+                    //Year End Day
+                    if(row.getCell(13) !=null && row.getCell(13).toString().length()>0){
+                        System.out.println("-------organizasyon 13------");
+
+                        date1=   String.valueOf((int)(row.getCell(13).getNumericCellValue()))+"/";
+
+                    }
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy", Locale.ENGLISH);
+                    DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("d/MMM/uuuu", Locale.ENGLISH);
+                    LocalDate yearEndDay;
+                    LocalDate localDate=LocalDate.now();
+                    //Year End Month
+                    if(row.getCell(14) !=null && row.getCell(14).toString().length()>0){
+                        System.out.println("-------organizasyon 14------");
+                        date1 = date1+row.getCell(14).toString()+"/";
+                        date1 = date1+localDate.getYear();
+                        yearEndDay = LocalDate.parse(date1, date1.length() > 10 ? formatter : formatter1);
+                        client.setYearEndDate(yearEndDay);
+                        company.setYearEndDate(yearEndDay);
+                    }
+
+                    //Paye Number
+                    if(row.getCell(15) !=null && row.getCell(15).toString().length()>0){
+                        System.out.println("-------organizasyon 15------");
+                        company.setPayeNumber(row.getCell(15).getRichStringCellValue().toString());
+                    }
+
+                    //Paye Office Ref
+                    if(row.getCell(16) !=null && row.getCell(16).toString().length()>0){
+                        System.out.println("-------organizasyon 16------");
+                        company.setPaOfficeNumber(row.getCell(16).getRichStringCellValue().toString());
+                    }
+
+                    //VAT Number
+                    if(row.getCell(17) !=null && row.getCell(17).toString().length()>0){
+                        System.out.println("-------organizasyon 17------");
+                        try{
+                            System.out.println("-------organizasyon 17 TRY------");
+                            String s = NumberToTextConverter.toText(row.getCell(17).getNumericCellValue());
+                            client.setVatNumber(s);
+                            company.setVatNumber(s);
+                        }catch(Exception e){
+                            System.out.println("-------organizasyon 17 CATCH------");
+                            client.setVatNumber(row.getCell(17).getRichStringCellValue().toString());
+                            company.setVatNumber(row.getCell(17).getRichStringCellValue().toString());
                         }
-                        //Email
-                        if(row.getCell(7) !=null && row.getCell(7).toString().length()>0){
-                            user.setEmail(row.getCell(7).toString());
-                        }
-                        if(row.getCell(8) !=null && user.getEmail() ==null && row.getCell(8).toString().length()>0){
-                            user.setEmail(row.getCell(8).toString());                        }
-                        if(row.getCell(10) !=null && row.getCell(10).toString().length()>0){
+                    }
 
-                            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd.MM.uuuu",new Locale("tr"));
-                            DateTimeFormatter formatter3 = DateTimeFormatter.ofPattern("d.MM.uuuu",new Locale("tr"));
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                            company.setIncorporatedDate(LocalDate.parse(dateFormat.format(row.getCell(10).getDateCellValue())));
-
-                        }
-
-                        // Company UTR
-                        if(row.getCell(11) !=null && row.getCell(11).toString().length()>0){
-                            String s = NumberToTextConverter.toText(row.getCell(11).getNumericCellValue());
-                            company.setCompanyUtr(String.valueOf(s));
-                        }
-
-                        // Company House Authentication
-                        if(row.getCell(12) !=null && row.getCell(12).toString().length()>0){
-                            Cell cell = row.getCell(12);
-                            cell.setCellType(CellType.STRING);
-                            company.setAuthentication(cell.getStringCellValue());
-                        }
-
-                        String date1="";
-                        //Year End Day
-                        if(row.getCell(13) !=null && row.getCell(13).toString().length()>0){
-
-                            date1=   String.valueOf((int)(row.getCell(13).getNumericCellValue()))+"/";
-
-                        }
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy", Locale.ENGLISH);
-                        DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("d/MMM/uuuu", Locale.ENGLISH);
-                        LocalDate yearEndDay;
-                        LocalDate localDate=LocalDate.now();
-                        //Year End Month
-                        if(row.getCell(14) !=null && row.getCell(14).toString().length()>0){
-                            date1 = date1+row.getCell(14).toString()+"/";
-                            date1 = date1+localDate.getYear();
-                            yearEndDay = LocalDate.parse(date1, date1.length() > 10 ? formatter : formatter1);
-                            client.setYearEndDate(yearEndDay);
-                            company.setYearEndDate(yearEndDay);
-                        }
-
-                        //Paye Number
-                        if(row.getCell(15) !=null && row.getCell(15).toString().length()>0){
-                            company.setPayeNumber(row.getCell(15).getRichStringCellValue().toString());
-                        }
-
-                        //Paye Office Ref
-                        if(row.getCell(16) !=null && row.getCell(16).toString().length()>0){
-                            company.setPaOfficeNumber(row.getCell(16).getRichStringCellValue().toString());
-                        }
-
-                        //VAT Number
-                        if(row.getCell(17) !=null && row.getCell(17).toString().length()>0){
-                            try{
-                                String s = NumberToTextConverter.toText(row.getCell(17).getNumericCellValue());
-                                client.setVatNumber(s);
-                                company.setVatNumber(s);
-                            }catch(Exception e){
-                                client.setVatNumber(row.getCell(17).getRichStringCellValue().toString());
-                                company.setVatNumber(row.getCell(17).getRichStringCellValue().toString());
-                            }
-                        }
-
-                        //VAT Number
-                        if(row.getCell(18) !=null && row.getCell(18).toString().length()>0){
-                            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/uuuu", Locale.ENGLISH);
-                            DateTimeFormatter formatter3 = DateTimeFormatter.ofPattern("d/MM/uuuu", Locale.ENGLISH);
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                            client.setVatPeriodEnd(LocalDate.parse(dateFormat.format(row.getCell(18).getDateCellValue())));
+                    //VAT Number
+                    if(row.getCell(18) !=null && row.getCell(18).toString().length()>0){
+                        System.out.println("-------organizasyon 18------");
+                        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/uuuu", Locale.ENGLISH);
+                        DateTimeFormatter formatter3 = DateTimeFormatter.ofPattern("d/MM/uuuu", Locale.ENGLISH);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        client.setVatPeriodEnd(LocalDate.parse(dateFormat.format(row.getCell(18).getDateCellValue())));
 //                            client.setVatPeriodEnd(LocalDate.parse(String.valueOf(row.getCell(18).getDateCellValue().getDay()) +"/"+String.valueOf(row.getCell(18).getDateCellValue().getMonth())+"/"+String.valueOf(row.getCell(18).getDateCellValue().getYear()),row.getCell(18).toString().length() > 10 ? formatter2 : formatter3));
-                        }
-                        //Vat Flat Rate Scheme
-                        if(row.getCell(19) !=null && row.getCell(19).toString().length()>0){
-                            client.setVatFlatRate(row.getCell(19).toString());
-                        }
+                    }
+                    //Vat Flat Rate Scheme
+                    if(row.getCell(19) !=null && row.getCell(19).toString().length()>0){
+                        System.out.println("-------organizasyon 19------");
+                        client.setVatFlatRate(row.getCell(19).toString());
+                    }
 
-                        String date2="";
-                        //Year End Day
-                        if(row.getCell(20) !=null && row.getCell(20).toString().length()>0){
-                            date2=  String.valueOf((int)(row.getCell(20).getNumericCellValue()))+"/";
+                    String date2="";
+                    //Year End Day
+                    if(row.getCell(20) !=null && row.getCell(20).toString().length()>0){
+                        System.out.println("-------organizasyon 20------");
+                        date2=  String.valueOf((int)(row.getCell(20).getNumericCellValue()))+"/";
 
-                        }
-                        //Year End Month
-                        if(row.getCell(21) !=null && row.getCell(21).toString().length()>0){
-                            date2 = date2+row.getCell(21).toString()+"/";
-                            date2 = date2+localDate.getYear();
-                            yearEndDay = LocalDate.parse(date2, date2.length() > 10 ? formatter : formatter1);
-                            company.setStatementDueDate(yearEndDay);
-                        }
+                    }
+                    //Year End Month
+                    if(row.getCell(21) !=null && row.getCell(21).toString().length()>0){
+                        System.out.println("-------organizasyon 21------");
+                        date2 = date2+row.getCell(21).toString()+"/";
+                        date2 = date2+localDate.getYear();
+                        yearEndDay = LocalDate.parse(date2, date2.length() > 10 ? formatter : formatter1);
+                        company.setStatementDueDate(yearEndDay);
+                    }
 
-                        // Address Line 1
-                        if(row.getCell(22) !=null && row.getCell(22).toString().length()>0){
-                            address.setAddressType(AddressType.OFFICE);
-                              address.setStreet(row.getCell(22).toString());
+                    // Address Line 1
+                    if(row.getCell(22) !=null && row.getCell(22).toString().length()>0){
+                        System.out.println("-------organizasyon 22------");
+                        address.setAddressType(AddressType.OFFICE);
+                        address.setStreet(row.getCell(22).toString());
 //                            client.setVatFlatRate(row.getCell(22).toString());
-                        }
+                    }
 
-                        // Address Line 2
-                        if(row.getCell(23) !=null && row.getCell(23).toString().length()>0){
-                              if(address.getStreet().length()<3){
-                                  address.setStreet(address.getStreet()+ " "+ row.getCell(23).toString());
-                              }else{
-                                  address.setCity(row.getCell(23).toString());
-                              }
+                    // Address Line 2
+                    if(row.getCell(23) !=null && row.getCell(23).toString().length()>0){
+                        System.out.println("-------organizasyon 23------");
+                        if(address.getStreet().length()<3){
+                            address.setStreet(address.getStreet()+ " "+ row.getCell(23).toString());
+                            System.out.println("-------organizasyon 23 if------");
+                        }else{
+                            address.setCity(row.getCell(23).toString());
+                            System.out.println("-------organizasyon 23 else------");
+                        }
 //                            address.setAddressType(AddressType.OFFICE);
 //                            client.setVatFlatRate(row.getCell(23).toString());
-                        }
+                    }
 
-                        // Address Line 3
-                        if(row.getCell(24) !=null && row.getCell(24).toString().length()>0){
-                            if(address.getCity()!=null){
-                                address.setCity(row.getCell(24).toString());
-                            }
+                    // Address Line 3
+                    if(row.getCell(24) !=null && row.getCell(24).toString().length()>0){
+                        System.out.println("-------organizasyon 24------");
+                        if(address.getCity()!=null){
+                            address.setCity(row.getCell(24).toString());
+                            System.out.println("-------organizasyon 24 if------");
+                        }
 //                            address.setAddressType(AddressType.OFFICE);
 //                            client.setVatFlatRate(row.getCell(23).toString());
-                        }
-                        // Address Line 4
-                        if(row.getCell(25) !=null && row.getCell(25).toString().length()>0){
+                    }
+                    // Address Line 4
+                    if(row.getCell(25) !=null && row.getCell(25).toString().length()>0){
+                        System.out.println("-------organizasyon 25------");
 //                            address.setAddressType(AddressType.OFFICE);
 //                            client.setVatFlatRate(row.getCell(23).toString());
-                        }
+                    }
 
-                        // PostCode
-                        if(row.getCell(26) !=null && row.getCell(26).toString().length()>0){
-                            address.setPostcode(row.getCell(26).toString());
+                    // PostCode
+                    if(row.getCell(26) !=null && row.getCell(26).toString().length()>0){
+                        System.out.println("-------organizasyon 26------");
+                        address.setPostcode(row.getCell(26).toString());
 //                            client.setVatFlatRate(row.getCell(23).toString());
-                        }
-                        address.setCounty("United Kingdom");
+                    }
+                    address.setCounty("United Kingdom");
 
-                        // Registered Office Number
-                        if(row.getCell(28) !=null  && row.getCell(28).toString().length()>0){
-                            client.setNotes(row.getCell(28).toString());
-                        }
+                    // Registered Office Number
+                    if(row.getCell(28) !=null  && row.getCell(28).toString().length()>0){
+                        System.out.println("-------organizasyon 28------");
+                        client.setNotes(row.getCell(28).toString());
+                    }
 
-                        if(row.getCell(29) !=null  && row.getCell(29).toString().length()>0){
-                            try{
-                                String s = NumberToTextConverter.toText(row.getCell(29).getNumericCellValue());
-                                company.setRegistration(s);
-                            }catch(Exception e){
-                                company.setRegistration(row.getCell(29).getRichStringCellValue().toString());
-                            }
-                        }
+                    if(row.getCell(29) !=null  && row.getCell(29).toString().length()>0){
+                        System.out.println("-------organizasyon 29------");
+                        try{
+                            String s = NumberToTextConverter.toText(row.getCell(29).getNumericCellValue());
+                            System.out.println("-------organizasyon 29 try------");
+                            company.setRegistration(s);
+                        }catch(Exception e){
 
-                        // Home Address Line 1
-                        if(row.getCell(30) !=null && row.getCell(30).toString().length()>0){
-                            addressHome.setAddressType(AddressType.HOME);
-                            addressHome.setStreet(row.getCell(30).toString());
+                            company.setRegistration(row.getCell(29).getRichStringCellValue().toString());
+                            System.out.println("-------organizasyon 29 catch------");
+                        }
+                    }
+
+                    // Home Address Line 1
+                    if(row.getCell(30) !=null && row.getCell(30).toString().length()>0){
+                        System.out.println("-------organizasyon 30------");
+                        addressHome.setAddressType(AddressType.HOME);
+                        addressHome.setStreet(row.getCell(30).toString());
 //                            client.setVatFlatRate(row.getCell(22).toString());
-                        }
+                    }
 
-                        // Address Line 2
-                        if(row.getCell(31) !=null && row.getCell(31).toString().length()>0){
-                            if(addressHome.getStreet().length()<3){
-                                addressHome.setStreet(addressHome.getStreet()+ " "+ row.getCell(31).toString());
-                            }else{
-                                addressHome.setCity(row.getCell(31).toString());
-                            }
+                    // Address Line 2
+                    if(row.getCell(31) !=null && row.getCell(31).toString().length()>0){
+                        System.out.println("-------organizasyon 31------");
+                        if(addressHome.getStreet().length()<3){
+                            System.out.println("-------organizasyon 31 if------");
+                            addressHome.setStreet(addressHome.getStreet()+ " "+ row.getCell(31).toString());
+                        }else{
+                            System.out.println("-------organizasyon 31 else-----");
+                            addressHome.setCity(row.getCell(31).toString());
+                        }
 //                            address.setAddressType(AddressType.OFFICE);
 //                            client.setVatFlatRate(row.getCell(23).toString());
-                        }
+                    }
 
-                        // Address Line 3
-                        if(row.getCell(32) !=null && row.getCell(32).toString().length()>0){
-                            if(addressHome.getCity()!=null){
-                                addressHome.setCity(row.getCell(32).toString());
-                            }
+                    // Address Line 3
+                    if(row.getCell(32) !=null && row.getCell(32).toString().length()>0){
+                        System.out.println("-------organizasyon 32------");
+                        if(addressHome.getCity()!=null){
+                            System.out.println("-------organizasyon 32 if------");
+                            addressHome.setCity(row.getCell(32).toString());
+                        }
 //                            address.setAddressType(AddressType.OFFICE);
 //                            client.setVatFlatRate(row.getCell(23).toString());
-                        }
+                    }
 
-                        // PostCode
-                        if(row.getCell(34) !=null && row.getCell(34).toString().length()>0){
-                            addressHome.setPostcode(row.getCell(34).toString());
+                    // PostCode
+                    if(row.getCell(34) !=null && row.getCell(34).toString().length()>0){
+                        System.out.println("-------organizasyon 34------");
+                        addressHome.setPostcode(row.getCell(34).toString());
 //                            client.setVatFlatRate(row.getCell(23).toString());
-                        }
-                        addressHome.setCounty("United Kingdom");
+                    }
+                    addressHome.setCounty("United Kingdom");
 
-                        if(row.getCell(37) != null && row.getCell(37).toString().length()>0){
-                            company.setVatPeriod(row.getCell(37).toString());
-                        }
-                        if(row.getCell(38) != null && row.getCell(38).toString().length()>0){
-                            company.setVatRegisterDate(row.getCell(38).toString());
-                        }
+                    if(row.getCell(37) != null && row.getCell(37).toString().length()>0){
+                        System.out.println("-------organizasyon 37-----");
+                        company.setVatPeriod(row.getCell(37).toString());
+                    }
+                    if(row.getCell(38) != null && row.getCell(38).toString().length()>0){
+                        System.out.println("-------organizasyon 38------");
+                        company.setVatRegisterDate(row.getCell(38).toString());
+                    }
 //                        //Registared Address Line 1
 //                        if(row.getCell(13) !=null){
 //                            address.setAddressType(AddressType.OFFICE);
@@ -361,31 +410,31 @@ public class ExistCompanyExportService {
 //                            client.setNotes(row.getCell(36).getStringCellValue().toString());
 //                        }
 
-                        if(user.getEmail()!=null){
-                            User result = userRepository.save(user);
-                            result.setUserFolder("user\\"+ GlobalVariable.converSessiz(result.getName())+result.getId());
-                            User result2 = userRepository.save(result);
-                            client.setIsActive(true);
-                            customer.setUser(result2);
-                            customerRepository.save(customer);
-                            ArrayList addresList = new ArrayList();
-                            addresList.add(address);
-                            addresList.add(addressHome);
+                    if(user.getEmail()!=null){
+                        User result = userRepository.save(user);
+                        result.setUserFolder("user\\"+ GlobalVariable.converSessiz(result.getName())+result.getId());
+                        User result2 = userRepository.save(result);
+                        client.setIsActive(true);
+                        customer.setUser(result2);
+                        customerRepository.save(customer);
+                        ArrayList addresList = new ArrayList();
+                        addresList.add(address);
+                        addresList.add(addressHome);
 
-                            client.setAddressList(addresList);
-                            client.setCompany(company);
-                            Client client1=clientRepository.save(client);
-                            client1.setClientFolder("client\\"+client1.getClientTypeEnum()+"-"+client1.getId().toString());
-                            Client client2 = clientRepository.save(client1);
-                            customerClient.setClient(client2);
-                            customerClient.setCustomerInfo(customer);
-                            customerClient.setSharePercent(100);
-                            customerClientRepository.save(customerClient);
-                            importDocument(client1,client1.getCode(),"","",result2.getId());
-                        }
-
+                        client.setAddressList(addresList);
+                        client.setCompany(company);
+                        Client client1=clientRepository.save(client);
+                        client1.setClientFolder("client\\"+client1.getClientTypeEnum()+"-"+client1.getId().toString());
+                        Client client2 = clientRepository.save(client1);
+                        customerClient.setClient(client2);
+                        customerClient.setCustomerInfo(customer);
+                        customerClient.setSharePercent(100);
+                        customerClientRepository.save(customerClient);
+                        importDocument(client1,client1.getCode(),"","",result2.getId());
                     }
+
                 }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -425,6 +474,7 @@ public class ExistCompanyExportService {
             }
         }catch(Exception e){
             e.printStackTrace();
+            System.out.println("catch e düştü");
         }
     }
     public DocumentType getFileType(String filename){
@@ -518,8 +568,10 @@ public class ExistCompanyExportService {
         });
         return rolesSet;
     }
+
+    ///Dicector ın excel i
     public void directorExcelExport() throws IOException {
-        String file="C:\\teinApp\\x.xlsx";
+        String file="C:\\Users\\DELL\\Desktop\\data\\x.xlsx";
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         try {
             XSSFWorkbook myWorkBook = new XSSFWorkbook(new FileInputStream(file));
@@ -540,108 +592,139 @@ public class ExistCompanyExportService {
                     }
                     //REF-NO Code
                     if(row.getCell(0) !=null){
+                        System.out.println("-------director 0------");
                         //if(row.getCell(0).toString().contains("AL139")){
-                         //   System.out.println("test");
+                        //   System.out.println("test");
                         //}
                         client1=clientRepository.findByCode(row.getCell(0).toString().substring(0,5));
 
                         director.setCode(row.getCell(0).toString());
                     }
                     if(row.getCell(1) !=null){
+                        System.out.println("-------director 1------");
                         director.setInitial(row.getCell(1).toString());
                     }
                     //Director Title
                     if(row.getCell(2) !=null && row.getCell(2).toString().length()>0){
+                        System.out.println("-------director 2------");
                         director.setName(row.getCell(2).getRichStringCellValue().toString());
                     }
                     //Director SurName
                     if(row.getCell(4) !=null && row.getCell(4).toString().length()>0){
+                        System.out.println("-------director 4------");
                         director.setSurname(row.getCell(4).getRichStringCellValue().toString());
                     }
                     //Director NINO
                     if(row.getCell(6) !=null && row.getCell(6).toString().length()>0){
+                        System.out.println("-------director 6------");
                         director.setNino(row.getCell(6).toString());
                     }
                     //Director UTR
                     if(row.getCell(7) !=null && row.getCell(7).toString().length()>0){
+                        System.out.println("-------director 7------");
                         String s = NumberToTextConverter.toText(row.getCell(7).getNumericCellValue());
                         director.setUtr(s.toString());
                     }
                     //Director Mobile
                     if(row.getCell(8) !=null && row.getCell(8).toString().length()>0){
+                        System.out.println("-------director 8------");
                         try{
                             String s = NumberToTextConverter.toText(row.getCell(8).getNumericCellValue());
+                            System.out.println("-------director 8 try------");
                             if(s.charAt(0)!='0'){
+
                                 director.setPhoneNumber("0"+s);
+                                System.out.println("-------director 8 try if------");
                             }else {
                                 director.setPhoneNumber(s);
+                                System.out.println("-------director 8 try else------");
                             }
                         }catch(Exception e){
                             String veri=row.getCell(8).toString().replaceAll(" ","");
+                            System.out.println("-------director 8 catch------");
                             if(veri.charAt(0)!='0'){
                                 director.setPhoneNumber("0"+veri);
+                                System.out.println("-------director 8 catch if------");
                             }else {
                                 director.setPhoneNumber(veri);
+                                System.out.println("-------director 8 catch else------");
                             }
                         }
                     }
                     //Director Nationality
                     if(row.getCell(9) !=null && row.getCell(9).toString().length()>0){
                         director.setNationality(row.getCell(9).getRichStringCellValue().toString());
+                        System.out.println("-------director 9------");
                     }
 
                     String addressText="";
                     //Registared Address Line 1
                     if(row.getCell(10) !=null && row.getCell(10).toString().length()>0){
                         addressText=addressText+row.getCell(10).toString();
+                        System.out.println("-------director 10------");
                     }
                     if(row.getCell(11) !=null && row.getCell(11).toString().length()>0){
                         addressText=addressText+row.getCell(11).toString();
+                        System.out.println("-------director 11------");
                     }
                     if(row.getCell(12) !=null && row.getCell(12).toString().length()>0){
                         addressText=addressText+row.getCell(12).toString();
+                        System.out.println("-------director 12------");
                     }
                     if(row.getCell(13) !=null && row.getCell(13).toString().length()>0){
                         addressText=addressText+row.getCell(13).toString();
+                        System.out.println("-------director 13------");
                     }
                     if(row.getCell(14) !=null && row.getCell(14).toString().length()>0){
                         addressText=addressText+row.getCell(14).toString();
+                        System.out.println("-------director 14------");
                     }
                     director.setResidentailAddress(addressText);
 
                     if(row.getCell(22) !=null && row.getCell(22).toString().length()>0){
+                        System.out.println("-------director 22------");
                         try{
                             String s = NumberToTextConverter.toText(row.getCell(22).getNumericCellValue());
+                            System.out.println("-------director 22 try------");
                             if(s.charAt(0)!='0'){
                                 director.setPhoneNumber("0"+s);
+                                System.out.println("-------director 22 try if------");
                             }else {
                                 director.setPhoneNumber(s);
+                                System.out.println("-------director 22 try else------");
                             }
                         }catch(Exception e){
                             String veri=row.getCell(22).toString().replaceAll(" ","");
+                            System.out.println("-------director 22 catch------");
                             if(veri.charAt(0)!='0'){
                                 director.setPhoneNumber("0"+veri);
+                                System.out.println("-------director 22 catch else------");
                             }else {
                                 director.setPhoneNumber(veri);
+                                System.out.println("-------director 22 catch else------");
                             }
                         }
                     }
 
                     if(row.getCell(27) !=null && row.getCell(27).toString().length()>0  && director.getPhoneNumber()==null){
                         director.setEmail(row.getCell(27).toString());
+                        System.out.println("-------director 27------");
                     }
 
                     if(row.getCell(23) !=null && row.getCell(23).toString().length()>0  && director.getEmail()==null){
                         director.setEmail(row.getCell(23).toString());
+                        System.out.println("-------director 23 -----");
                     }
 
                     //Director D.O.B Date Türkçe Geliyor
-                   // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu", new Locale("tr"));
+                    // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu", new Locale("tr"));
                     //DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("d/MM/uuuu",new Locale("tr"));
                     LocalDate date;
                     if(row.getCell(29) !=null && row.getCell(29).toString().length()>0){
+                        System.out.println("-------director 29 GİRİŞ -----");
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         director.setDob(LocalDate.parse(dateFormat.format(row.getCell(29).getDateCellValue())));
+                        System.out.println("-------director 29 son -----");
                     }
 
 
@@ -785,6 +868,8 @@ public class ExistCompanyExportService {
         }
         soleTradeExcelExport();
     }
+
+
     public Set<DirectorDetail> DirectorSet(List<DirectorDetail> directors) {
         Set<DirectorDetail> rolesSet = new HashSet<>();
         directors.forEach((DirectorDetail item) -> {
@@ -792,13 +877,16 @@ public class ExistCompanyExportService {
         });
         return rolesSet;
     }
+    //soletrade
     public void soleTradeExcelExport() throws IOException {
-        String file="C:\\teinApp\\EXPORT SOLETRADERS.xlsx";
+        String file="C:\\Users\\DELL\\Desktop\\data\\sole.xlsx";
         try {
             XSSFWorkbook myWorkBook = new XSSFWorkbook(new FileInputStream(file));
 
             XSSFSheet firstSheet = myWorkBook.getSheetAt(0);
+            int a = 0;
             for (int k = 1; k <= firstSheet.getPhysicalNumberOfRows(); k++) {
+                System.out.println(a);
                 Row row = firstSheet.getRow(k);
                 if (row != null) {
                     //Model Tanımlamaları
@@ -818,11 +906,14 @@ public class ExistCompanyExportService {
                     }
                     //REF-NO Code
                     if(row.getCell(0) !=null){
+                        System.out.println("-------SOLE 0 -----");
                         if(row.getCell(0).getRichStringCellValue().toString().contains("SL")){
                             client.setAgreementType(AgreementType.ECAA);
+                            System.out.println("-------SOLE 0 İF -----");
 
                         }else if(row.getCell(0).getRichStringCellValue().toString().contains("ST")){
                             client.setAgreementType(AgreementType.TRADING);
+                            System.out.println("-------SOLE 0  ELSE İF-----");
                         }
                         client.setClientTypeEnum(ClientTypeEnum.SOLETRADE);
                         client.setIsExisting(true);
@@ -831,107 +922,136 @@ public class ExistCompanyExportService {
                         user.setIsActive(true);
                         user.setIsDeleted(false);
                         client.setCode(row.getCell(0).getRichStringCellValue().toString());
+                        System.out.println("-------SOLE 0  ELSE-----");
                     }
                     //Company Name
                     if(row.getCell(1) !=null && row.getCell(1).toString().length()>0){
+                        System.out.println("-------SOLE 1 -----");
                         founderOwner.setInitial(row.getCell(1).getRichStringCellValue().toString());
                         user.setTitle(row.getCell(1).getRichStringCellValue().toString());
                     }
                     //Director Name
                     String isim="";
                     if(row.getCell(2) !=null && row.getCell(2).toString().length()>0){
+                        System.out.println("-------SOLE 2 -----");
                         isim=row.getCell(2).toString();
                     }
                     //Director SurName
                     if(row.getCell(3) !=null && row.getCell(3).toString().length()>0){
+                        System.out.println("-------SOLE 3 -----");
                         isim=isim+" "+row.getCell(3).toString();
                     }
                     founderOwner.setName(isim);
                     user.setName(isim);
                     //Director SurName
                     if(row.getCell(4) !=null && row.getCell(4).toString().length()>0){
+                        System.out.println("-------SOLE 4 -----");
                         founderOwner.setSurname(row.getCell(4).toString());
                         user.setSurname(row.getCell(4).toString());
                     }
 //                    founderOwner.setTradeAsName(founderOwner.getName()+ " "+founderOwner.getSurname());
                     //Director NINO
                     if(row.getCell(6) !=null && row.getCell(6).toString().length()>0){
+                        System.out.println("-------SOLE 6 -----");
 
 //                        String s = NumberToTextConverter.toText(row.getCell(6).getNumericCellValue());
                         founderOwner.setNino(row.getCell(6).toString());
                     }
                     //Director UTR
                     if(row.getCell(7) !=null && row.getCell(7).toString().length()>0){
+                        System.out.println("-------SOLE 7 -----");
                         String s = NumberToTextConverter.toText(row.getCell(7).getNumericCellValue());
                         founderOwner.setUtr(s.toString());
                     }
                     //Director Mobile
                     if(row.getCell(8) !=null && row.getCell(8).toString().length()>0){
+                        System.out.println("-------SOLE 8 -----");
 
                         try{
+                            System.out.println("-------SOLE 8 TRY -----");
                             String s = NumberToTextConverter.toText(row.getCell(8).getNumericCellValue());
                             if(s.charAt(0)!='0'){
+                                System.out.println("-------SOLE 8 TRY İF -----");
                                 founderOwner.setPhoneNumber("0"+s);
                             }else {
+                                System.out.println("-------SOLE 8 TRY ELSE -----");
                                 founderOwner.setPhoneNumber(s);
                             }
                         }catch(Exception e){
+                            System.out.println("-------SOLE 8 CATCH -----");
                             String veri=row.getCell(8).toString().replaceAll(" ","");
                             if(veri.charAt(0)!='0'){
+                                System.out.println("-------SOLE 8 CATCH İF -----");
                                 founderOwner.setPhoneNumber("0"+veri);
                             }else {
+                                System.out.println("-------SOLE 8 CATCH ELSE -----");
                                 founderOwner.setPhoneNumber(veri);
                             }
                         }
                     }
                     //Director Nationality
                     if(row.getCell(9) !=null && row.getCell(9).toString().length()>0){
+                        System.out.println("-------SOLE 9 -----");
                         founderOwner.setNationality(row.getCell(9).getRichStringCellValue().toString());
                     }
 
                     String addressText="";
                     //Registared Address Line 1
                     if(row.getCell(10) !=null && row.getCell(10).toString().length()>0){
+                        System.out.println("-------SOLE 10 -----");
                         addressText=addressText+row.getCell(10).toString();
                     }
                     if(row.getCell(11) !=null && row.getCell(11).toString().length()>0){
+                        System.out.println("-------SOLE 11 -----");
                         addressText=addressText+row.getCell(11).toString();
                     }
                     if(row.getCell(12) !=null && row.getCell(12).toString().length()>0){
+                        System.out.println("-------SOLE 12 -----");
                         addressText=addressText+row.getCell(12).toString();
                     }
                     if(row.getCell(13) !=null && row.getCell(13).toString().length()>0){
+                        System.out.println("-------SOLE 13 -----");
                         addressText=addressText+row.getCell(13).toString();
                     }
                     if(row.getCell(14) !=null && row.getCell(14).toString().length()>0){
+                        System.out.println("-------SOLE 14 -----");
                         addressText=addressText+row.getCell(14).toString();
                     }
                     founderOwner.setResidentailAddress(addressText);
 
                     if(row.getCell(22) !=null && row.getCell(22).toString().length()>0){
+                        System.out.println("-------SOLE 22 -----");
                         try{
+                            System.out.println("-------SOLE 22 TRY  -----");
                             String s = NumberToTextConverter.toText(row.getCell(22).getNumericCellValue());
                             if(s.charAt(0)!='0'){
+                                System.out.println("-------SOLE 22 TRY  İF -----");
                                 founderOwner.setPhoneNumber("0"+s);
                             }else {
+                                System.out.println("-------SOLE 22 TRY ELSE  -----");
                                 founderOwner.setPhoneNumber(s);
                             }
                         }catch(Exception e){
+                            System.out.println("-------SOLE 22 CATCH  -----");
                             String veri=row.getCell(22).toString().replaceAll(" ","");
                             if(veri.charAt(0)!='0'){
+                                System.out.println("-------SOLE 22 CATCH İF  -----");
                                 founderOwner.setPhoneNumber("0"+veri);
                             }else {
+                                System.out.println("-------SOLE 22 CATCH ELSE  -----");
                                 founderOwner.setPhoneNumber(veri);
                             }
                         }
                     }
 
                     if(row.getCell(26) !=null && row.getCell(26).toString().length()>0 ){
+                        System.out.println("-------SOLE 26   -----");
                         founderOwner.setEmail(row.getCell(26).toString());
                         user.setEmail(row.getCell(26).toString());
                     }
 
                     if(row.getCell(23) !=null && row.getCell(23).toString().length()>0  && user.getEmail()==null){
+                        System.out.println("-------SOLE 23 -----");
                         founderOwner.setEmail(row.getCell(23).toString());
                         user.setEmail(row.getCell(23).toString());
                     }
@@ -940,30 +1060,43 @@ public class ExistCompanyExportService {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-uuuu", new Locale("tr"));
                     DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("d-MMM-uuuu",new Locale("tr"));
                     LocalDate date;
+
                     if(row.getCell(28) !=null && row.getCell(28).toString().length()>0){
+                        System.out.println("-------SOLE 28 -----");
+
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         founderOwner.setDob(LocalDate.parse(dateFormat.format(row.getCell(28).getDateCellValue())));
 
                         //founderOwner.setDob(LocalDate.parse(row.getCell(28).toString(), row.getCell(28).toString().length() > 9 ? formatter : formatter1));
                     }
+                    try {
+                        try {
+                            User result = userRepository.save(user);
+                            result.setUserFolder("user\\" + GlobalVariable.converSessiz(result.getName()) + result.getId());
+                            User result2 = userRepository.save(result);
+                            client.setIsActive(true);
+                            customer.setUser(result2);
+                            customerRepository.save(customer);
+                            client.setAddressList(Arrays.asList(address));
+                            client.setFounderOwner(founderOwner);
+                            Client client1 = clientRepository.save(client);
+                            client1.setClientFolder("client\\" + client1.getClientTypeEnum() + "-" + client1.getId().toString());
+                            Client client2 = clientRepository.save(client1);
+                            customerClient.setClient(client2);
+                            customerClient.setCustomerInfo(customer);
+                            customerClient.setSharePercent(100);
+                            customerClientRepository.save(customerClient);
+                            importDocument(client1, client1.getCode(), "", "", result2.getId());
+                        }catch (Exception e){
+                            System.out.println("-*-*-*-*-*-*-*-*-*-*-*-*-*-*----HAATA BU SATIRDAAACATCH e Düşen satır:   "+ a);
 
-                    User result = userRepository.save(user);
-                    result.setUserFolder("user\\"+ GlobalVariable.converSessiz(result.getName())+result.getId());
-                    User result2 = userRepository.save(result);
-                    client.setIsActive(true);
-                    customer.setUser(result2);
-                    customerRepository.save(customer);
-                    client.setAddressList(Arrays.asList(address));
-                    client.setFounderOwner(founderOwner);
-                    Client client1=clientRepository.save(client);
-                    client1.setClientFolder("client\\"+client1.getClientTypeEnum()+"-"+client1.getId().toString());
-                    Client client2 = clientRepository.save(client1);
-                    customerClient.setClient(client2);
-                    customerClient.setCustomerInfo(customer);
-                    customerClient.setSharePercent(100);
-                    customerClientRepository.save(customerClient);
-                    importDocument(client1,client1.getCode(),"","",result2.getId());
+                        }
+                    }catch (Exception e){
+                        System.out.println("BURAYA DÜŞMEMEMSİ LAZIM");
+
+                    }
                 }
+                a=a+1;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -972,11 +1105,13 @@ public class ExistCompanyExportService {
     }
 
     public void PersonelExport () throws IOException{
-        String file = "C:\\teinApp\\Personel.xlsx";
+        //C:\Users\DELL\Desktop\data
+        String file = "C:\\Users\\DELL\\Desktop\\data\\Personel.xlsx";
         try{
             XSSFWorkbook myWorkBook = new XSSFWorkbook(new FileInputStream(file));
             XSSFSheet firstSheet = myWorkBook.getSheetAt(0);
             for (int k = 1; k <= firstSheet.getPhysicalNumberOfRows(); k++) {
+                System.out.println("personele girdi");
                 Row row = firstSheet.getRow(k);
                 if(row != null){
                     Address address = new Address();
@@ -1029,7 +1164,7 @@ public class ExistCompanyExportService {
                     personelRepository.save(personel);
                 }
             }
-            }catch (Exception e){
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
