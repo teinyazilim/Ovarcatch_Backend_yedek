@@ -463,14 +463,14 @@ public class TaskService {
         ClientDTO client1=clientService.getClientDetail(tasks.getClient().getId());
 
         //Eğer Kullanıcnın user_language kısmı null ise default olarak Ingilizce olan template gönderiyorum ...
-        if(client1.getCustomerClients().get(0).getCustomerInfo().getUserInfo().getUserlanguage() == null){
-            client1.getCustomerClients().get(0).getCustomerInfo().getUserInfo().setUserlanguage("en");
+        if(client1.getCustomerClients().get(0).getCustomerInfo().getUser().getUserlanguage() == null){
+            client1.getCustomerClients().get(0).getCustomerInfo().getUser().setUserlanguage("en");
         }
 
-        else if(client1.getCustomerClients().get(0).getCustomerInfo().getUserInfo().getUserlanguage().equals("tr")){
+        else if(client1.getCustomerClients().get(0).getCustomerInfo().getUser().getUserlanguage().equals("tr")){
             mailService.sendMailHtmlAddTaskTR(client1.getFounderOwner()!=null ? client1.getFounderOwner().getEmail():client1.getCompany().getEmail(), moduleType.getResponsibleEmail(), tasks.getModuleType().getModuleTypeEnum().getName());
         }
-        else if(client1.getCustomerClients().get(0).getCustomerInfo().getUserInfo().getUserlanguage().equals("en")){
+        else if(client1.getCustomerClients().get(0).getCustomerInfo().getUser().getUserlanguage().equals("en")){
             mailService.sendMailHtmlAddTask(client1.getFounderOwner()!=null ? client1.getFounderOwner().getEmail():client1.getCompany().getEmail(), moduleType.getResponsibleEmail(), tasks.getModuleType().getModuleTypeEnum().getName());
         }
 
