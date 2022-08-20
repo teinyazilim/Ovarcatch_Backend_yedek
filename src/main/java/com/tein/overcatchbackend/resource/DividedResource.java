@@ -36,7 +36,7 @@ public class DividedResource {
     private final FileStorageService fileStorageService;
 
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER') || hasRole('ROLE_EMPLOYEE')")
     @GetMapping("/file/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         // Load file as Resource
@@ -97,7 +97,7 @@ public class DividedResource {
 
     }*/
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER') || hasRole('ROLE_EMPLOYEE')")
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public Divided saveDivided(@RequestBody Divided divided,
                                @RequestParam("clientId") String clientId) throws JRException, FileNotFoundException{
