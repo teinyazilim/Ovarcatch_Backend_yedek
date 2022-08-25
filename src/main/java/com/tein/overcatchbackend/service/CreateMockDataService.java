@@ -904,6 +904,10 @@ public class CreateMockDataService {
                 "UPDATE `overcatch`.`module_type` SET `module_type_id` = '1007' WHERE (`id` = '1024')",
                 "UPDATE `overcatch`.`module_type` SET `module_type_id` = '1007' WHERE (`id` = '1025')",
                 "UPDATE `overcatch`.`module_type` SET `module_type_id` = '1007' WHERE (`id` = '1026')",
+                "UPDATE `overcatch`.`module_type` SET `module_type_id` = '1020' WHERE (`id` = '1027')",
+                "UPDATE `overcatch`.`module_type` SET `module_type_id` = '1020' WHERE (`id` = '1028')",
+                "UPDATE `overcatch`.`module_type` SET `module_type_id` = '1020' WHERE (`id` = '1029')",
+                "UPDATE `overcatch`.`module_type` SET `module_type_id` = '1020' WHERE (`id` = '1030')",
                };
         int i = 0;
         for (ModuleTypeEnum a : moduleTypes) {
